@@ -1,0 +1,190 @@
+[{
+        "mealId": 0,
+        "nameAdult": "Spaghetti Bolognese",
+        "nameKids": "Spaghetti Bolognese",
+        "src": "spaghetti-bolognese.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "long",
+        "ingredients": [
+            "Spaghetti",
+            "Beef Mince",
+            "Passata",
+            "Garlic"
+        ],
+        "tags": [
+            "Beef",
+            "Pasta"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    }, {
+        "mealId": 1,
+        "nameAdult": "Thai Green Chicken Curry",
+        "nameKids": "Creamy Curry",
+        "src": "thai-green-chicken-curry.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "short",
+        "ingredients": [
+            "Chicken",
+            "Rice",
+            "Snowpeas",
+            "Carrot",
+            "Capsicum",
+            "Coconut Milk",
+            "Green Curry Paste",
+            "Fish Sauce"
+
+        ],
+        "tags": [
+            "Chicken"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    },
+    {
+        "mealId": 2,
+        "nameAdult": "Lamb Butterfly Souvlaki",
+        "nameKids": "Lamb",
+        "src": "butterflied-lamb.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 1.5
+        },
+        "prepTime": "long",
+        "ingredients": [
+            "Lamb",
+            "Potato",
+            "Sweet Potato",
+            "Carrots"
+        ],
+        "tags": [
+            "Lamb"
+        ],
+        "leftovers": {
+            "F": ["Sweet Potato"],
+            "T": []
+        }
+    }, {
+        "mealId": 3,
+        "nameAdult": "Bangers and Mash",
+        "nameKids": "Snossages",
+        "src": "bangers-mash.jpg",
+        "ratings": {
+            "F": 2,
+            "T": 3
+        },
+        "prepTime": "short",
+        "ingredients": [
+            "Sausages",
+            "Potato",
+            "Broccolli",
+            "Carrots"
+        ],
+        "tags": [
+            "Sausages"
+        ],
+        "leftovers": {
+            "F": ["Sweet Potato"],
+            "T": []
+        }
+    }, {
+        "mealId": 4,
+        "nameAdult": "Lasagna",
+        "nameKids": "Lasagna",
+        "src": "beef-lasagne.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "long",
+        "ingredients": [
+            "Beef",
+            "Lasagna Sheets",
+            "Bechamel Sauce",
+            "Passata",
+            "Garlic"
+        ],
+        "tags": [
+            "Beef"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    }, {
+        "mealId": 5,
+        "nameAdult": "Tacos",
+        "nameKids": "Wraps",
+        "src": "tacos.jpg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "Short",
+        "ingredients": [
+            "Taco Kit",
+            "Beef",
+            "Salad"
+        ],
+        "tags": [
+            "Beef", "Salad"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    }, {
+        "mealId": 6,
+        "nameAdult": "Chicken Pumpkin Risotto",
+        "nameKids": "Rice",
+        "src": "chicken-pumpkin-risotto.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "Short",
+        "ingredients": [
+            "Risotto",
+            "Pumpkin",
+            "Chicken"
+        ],
+        "tags": [
+            "Chicken"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    }, {
+        "mealId": 7,
+        "nameAdult": "Chorizo Risotto",
+        "nameKids": "Rice",
+        "src": "chicken-chorizo-risotto.jpeg",
+        "ratings": {
+            "F": 2,
+            "T": 2
+        },
+        "prepTime": "Short",
+        "ingredients": [
+            "Risotto",
+            "Chorizo"
+        ],
+        "tags": [
+            "Chicken"
+        ],
+        "leftovers": {
+            "F": [],
+            "T": []
+        }
+    }
+]
