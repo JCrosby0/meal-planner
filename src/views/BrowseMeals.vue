@@ -1,5 +1,6 @@
 <template>
   <div class="root">
+    <h2 class="center">Select meals for this week</h2>
     <div class="filter-container">
       Filter:
       <input />
@@ -41,6 +42,9 @@ export default {
 <style scoped>
 .root {
   text-align: left;
+}
+.center {
+  text-align: center;
 }
 .filter-container {
   padding-left: 12px;

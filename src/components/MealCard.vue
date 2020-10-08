@@ -1,5 +1,9 @@
 <template>
-  <div class="meal-card" :class="{ 'meal-card-selected': selected }">
+  <div
+    class="meal-card"
+    :class="{ 'meal-card-selected': selected }"
+    @click="selectMeal(mealObj)"
+  >
     <div class="card-header">
       <span class="title">{{ mealObj.nameKids }}</span
       ><br />
