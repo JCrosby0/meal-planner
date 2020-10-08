@@ -33,7 +33,8 @@ export default {
 }
 
 .link {
-  flex: 0 0 20%;
+  flex: 0 0 32%;
+  font-size: 0.75rem;
   color: #fff;
   padding: 6px;
 

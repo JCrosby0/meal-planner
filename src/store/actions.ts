@@ -1,6 +1,6 @@
 import { ActionTree, ActionContext } from "vuex";
 import { State } from "./state";
-import { Mutations } from "./mutations";
+import { Mutations, AssignMealObject } from "./mutations";
 import { ActionTypes } from "./action-types";
 import { MutationTypes } from "./mutation-types";
 
@@ -16,13 +16,27 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     mealId: number
   ): Promise<number>;
+  [ActionTypes.assignMeal](
+    { commit }: AugmentedActionContext,
+    payload: object
+  ): Promise<object>;
 }
 
 export const actions: ActionTree<State, State> & Actions = {
-  [ActionTypes.toggleMealId]({ commit }, mealId) {
+  [ActionTypes.toggleMealId]({ state, commit }, mealId) {
     return new Promise(resolve => {
       commit(MutationTypes.TOGGLE_MEAL_ID, mealId);
+      if (state.assignedMeals.includes(mealId)) {
+        commit(MutationTypes.UNASSIGN_MEAL_ID, mealId);
+      }
       resolve(mealId);
+    });
+  },
+  [ActionTypes.assignMeal]({ commit }, payload: AssignMealObject) {
+    return new Promise(resolve => {
+      commit(MutationTypes.UNASSIGN_MEAL_ID, payload.mealId);
+      commit(MutationTypes.ASSIGN_MEAL_ID_TO_DAY_ID, payload);
+      resolve(payload);
     });
   }
 };

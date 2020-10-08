@@ -1,5 +1,5 @@
 <template>
-  <div class="this-week-root">
+  <div class="this-week-root" @dragend="dragEnd()">
     <h1>
       List of meals selected for this week
     </h1>
@@ -9,17 +9,22 @@
     <!-- 2 columns, assigned and unassigned -->
     <div class="meal-order-planner">
       <div class="assigned">
-        Assigned Meals ({{ orderedMeals.filter(m => !!m).length }})
+        Assigned Meals ({{ orderedMealsCount }})
         <span v-for="(day, i) in dayOfWeek" :key="'row-item' + i">
-          <div :id="day" class="row-item" @drop="e => onDrop(e, day)">
-            <!-- @dragenter="dragOver(day)" -->
-            <!-- @dragleave="dragOver(day)" -->
+          <div :id="day" class="row-item">
             <div class="day-item">{{ day }}:</div>
             <MealToken
-              :name="selectedMeal(i)"
+              :name="orderedMealObjects[i].nameAdult"
+              :meal-id="orderedMealObjects[i].mealId"
               class="dropzone"
-              :class="{ draggable: selectedMeal(i) }"
-              @remove="payload => removeMeal(selectedMeal(i), payload)"
+              :class="{ draggable: orderedMealObjects[i].mealId > -1 }"
+              :draggable="orderedMealObjects[i].mealId > -1"
+              @dragstart="e => dragStart(e, orderedMealObjects[i])"
+              @drop="e => onDrop(e, i)"
+              @dragenter.prevent="e => dragOver(e)"
+              @dragleave.prevent="e => dragOver(e)"
+              @dragover.prevent
+              @remove="removeMeal(selectedMeal(i))"
             />
           </div>
         </span>
@@ -28,10 +33,11 @@
         Unassigned Meals ({{ unassignedMeals.length }}):
         <div v-for="meal in unassignedMeals" :key="meal">
           <MealToken
-            :name="meal"
+            :name="meal.nameAdult"
+            :meal-id="meal.mealId"
             class="draggable"
+            :draggable="true"
             @dragstart="e => dragStart(e, meal)"
-            @remove="payload => removeMeal(meal, payload)"
           />
           <!-- @dragend="e => logEvent(e, 'token')" -->
           <!-- @drag="e => logEvent(e, 'token')" -->
@@ -43,24 +49,35 @@
 </template>
 
 <script>
+const placeholder = {
+  nameAdult: "Drag a meal here",
+  mealId: -1
+};
 import MealToken from "@/components/MealToken";
 import meals from "@/assets/meals.json";
 import { useStore } from "../store";
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 export default {
   components: { MealToken },
   setup() {
     const store = useStore();
     const selectedMeals = computed(() => store.state.mealsThisWeek); // [true, false, false, true, false...]
+    const orderedMeals = computed(() => store.state.assignedMeals);
+    const orderedMealObjects = computed(() => {
+      return store.state.assignedMeals.map(mealId => {
+        return meals.find(n => n.mealId === mealId) || placeholder;
+      });
+    });
+    const orderedMealsCount = computed(
+      () => store.state.assignedMeals.filter(m => m !== -1).length
+    );
     const mealsThisWeek = computed(() => store.getters.selectedMealsThisWeek); // [1, 5, ...]
-    const orderedMeals = reactive(Array(7).fill(false));
     const unassignedMeals = computed(() => {
-      const toPlaceMealIds = store.getters.selectedMealsThisWeek.filter(
-        m => !orderedMeals.includes(m)
-      );
-      const unassigned = meals
-        .filter(m => toPlaceMealIds.includes(m.mealId))
-        .map(m => m.nameAdult);
+      const toPlaceMealIds = store.getters.selectedMealsThisWeek.filter(m => {
+        return !store.state.assignedMeals.includes(m);
+      });
+      const unassigned = meals.filter(m => toPlaceMealIds.includes(m.mealId));
+      // .map(m => m.nameAdult);
       return unassigned;
     });
     const mealsTWObj = computed(() =>
@@ -83,6 +100,8 @@ export default {
       mealsTWObj,
       dayOfWeek,
       orderedMeals,
+      orderedMealsCount,
+      orderedMealObjects,
       unassignedMeals
     }; // anything returned here will be available for the rest of the component
   },
@@ -95,44 +114,60 @@ export default {
     removeMeal(meal, payload) {
       if (!meal) return;
       console.log("remove meal: ", meal, payload);
+      this.$store.dispatch("toggleMealId", meal.mealId);
     },
-    toggleDroppable() {
-      document
-        .getElementsByClassName("dropzone")
-        .forEach(element => element.classList.toggle("droppable"));
+    toggleDroppable(setTo = "toggle") {
+      const zones = document.getElementsByClassName("dropzone");
+      switch (setTo) {
+        case "toggle":
+          zones.forEach(z => z.classList.toggle("droppable"));
+          break;
+        case "true":
+        case true:
+          zones.forEach(z => z.classList.add("droppable"));
+          break;
+        case "false":
+        case false:
+          zones.forEach(z => z.classList.remove("droppable"));
+          zones.forEach(z => z.classList.remove("drag-hover"));
+      }
     },
     logEvent(e, x) {
       // generic function for logging what's going on
       console.log(e.type, e, x);
     },
-    dragPrevent(e) {
-      // figure out where this is actually needed.
-      e.preventDefault();
-      console.log("drag prevent fired: ", e);
-    },
+    // dragPrevent(e) {
+    //   // figure out where this is actually needed.
+    //   e.preventDefault();
+    //   console.log("drag prevent fired: ", e);
+    // },
     dragStart(e, meal) {
       // toggle all the droppable zones
-      console.log("drag start: ", e, meal);
+      //   console.log("drag start: ", e, meal);
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("meal", meal);
+      e.dataTransfer.setData("meal", JSON.stringify(meal));
       // add meal id to dataTransfer
-      this.toggleDroppable();
+      this.toggleDroppable(true);
     },
-    dragEnd(e) {
+    dragEnd() {
       // when dragging ends, remove all droppable highlghting
-      console.log("drag end: ", e);
-      this.toggleDroppable();
+      //   console.log("drag end: ", e);
+      this.toggleDroppable(false);
     },
-    dragOver(x) {
+    dragOver(e) {
       // when dragging over a droppable, change color for confirmation
-      console.log("drag over:", x);
-      document.getElementById(x).classList.toggle("drag-hover");
+      //   console.log("drag-hover toggle:", e, x);
+      e.target.classList.toggle("drag-hover");
     },
-    onDrop(e, day) {
-      const meal = e.dataTransfer.getData("meal");
-      const object = meals.find(m => (m.nameAdult = meal));
-      console.log("day: ", day, " received drop: ", meal, object);
+    onDrop(e, dayIndex) {
+      this.toggleDroppable(false);
+      const meal = JSON.parse(e.dataTransfer.getData("meal"));
+      //   this.orderedMeals[dayIndex] = object.mealId;
+      this.$store.dispatch("assignMeal", {
+        mealId: meal.mealId,
+        dayId: dayIndex
+      });
     }
   }
 };
@@ -173,11 +208,11 @@ export default {
   /* placeholder */
   /* cursor: no-drop; */
 }
-.drag-hover {
-  background: paleturquoise;
-}
 .droppable {
   background: palegoldenrod;
+}
+.drag-hover {
+  background: palevioletred;
 }
 /* .meal-item {
   flex: 1 0 200px;

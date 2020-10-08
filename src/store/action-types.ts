@@ -1,3 +1,4 @@
 export enum ActionTypes {
-  toggleMealId = 'toggleMealId',
+  toggleMealId = "toggleMealId",
+  assignMeal = "assignMeal"
 }

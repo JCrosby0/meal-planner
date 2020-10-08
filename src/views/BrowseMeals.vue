@@ -3,7 +3,6 @@
     <div class="filter-container">
       Filter:
       <input />
-      Selected Meals: {{ mealsThisWeek }}
     </div>
     <div class="card-container">
       <MealCard

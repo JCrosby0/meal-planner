@@ -10,24 +10,35 @@
 
 <script>
 const phText = "Drag a meal here";
+import { computed } from "vue";
 export default {
   props: {
     name: {
       type: String || Boolean,
       required: false,
       default: () => phText
+    },
+    mealId: {
+      type: Number,
+      required: false,
+      default: () => -1
     }
   },
   setup(props) {
-    const isPlaceholder = props.name === phText;
+    const isPlaceholder = computed(() => props.name === phText);
     return {
       isPlaceholder
     };
   },
   methods: {
-    removeMeal() {
-      this.$emit("remove", this.name);
+    removeMeal(meal, payload) {
+      if (!meal) return;
+      console.log("remove meal: ", meal, payload);
+      this.$store.dispatch("toggleMealId", this.mealId);
     }
+    // removeMeal() {
+    //   this.$emit("remove", this.name);
+    // }
   }
   // the "rest" of the component
 };
