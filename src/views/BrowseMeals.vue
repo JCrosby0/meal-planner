@@ -1,12 +1,17 @@
 <template>
   <div class="root">
-    <h1>card list of meals</h1>
-    <ul>
-      <li>filterable by tags</li>
-      <li>click to add to this week's meal plan</li>
-    </ul>
+    <div class="filter-container">
+      Filter:
+      <input />
+      Selected Meals: {{ mealsThisWeek }}
+    </div>
     <div class="card-container">
-      <MealCard v-for="k in arrMealIds" :key="'meal-id-' + k" :meal-id="k" />
+      <MealCard
+        v-for="(k, i) in arrMealIds"
+        :key="'meal-id-' + k"
+        :meal-id="k"
+        :selected="mealsThisWeek.includes(i)"
+      />
     </div>
   </div>
 </template>
@@ -14,18 +19,20 @@
 <script>
 import MealCard from "@/components/MealCard.vue";
 import meals from "@/assets/meals.json";
+import { useStore } from "../store";
+import { computed } from "vue";
 export default {
   components: { MealCard },
-  props: {
-    user: { type: String, default: () => "joe" }
-  },
-  setup(props) {
-    console.log(props); // { user: '' }
-    console.log(meals);
+  setup() {
+    const store = useStore();
     const arrMealIds = meals.map(v => v.mealId);
+    const selectedMeals = computed(() => store.state.mealsThisWeek);
+    const mealsThisWeek = computed(() => store.getters.selectedMealsThisWeek);
     return {
       meals,
-      arrMealIds
+      arrMealIds,
+      selectedMeals,
+      mealsThisWeek
     }; // anything returned here will be available for the rest of the component
   }
   // the "rest" of the component
@@ -33,6 +40,12 @@ export default {
 </script>
 
 <style scoped>
+.root {
+  text-align: left;
+}
+.filter-container {
+  padding-left: 12px;
+}
 .card-container {
   text-align: center;
   display: flex;

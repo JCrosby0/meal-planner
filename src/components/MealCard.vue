@@ -1,5 +1,5 @@
 <template>
-  <div class="meal-card">
+  <div class="meal-card" :class="{ 'meal-card-selected': selected }">
     <div class="card-header">
       <span class="title">{{ mealObj.nameKids }}</span
       ><br />
@@ -34,8 +34,10 @@
         <i class="material-icons pink">thumb_up</i>
         <span>{{ mealObj.ratings.F }}</span>
       </div>
-      <div class="button">
-        <i class="material-icons" @click="addMeal(mealObj)">add</i>
+      <div class="button" :class="{ 'button-selected': selected }">
+        <i class="material-icons" @click="selectMeal(mealObj)">
+          {{ selectedIcon }}
+        </i>
       </div>
     </div>
   </div>
@@ -43,24 +45,30 @@
 
 <script>
 import meals from "@/assets/meals.json";
+import { computed } from "vue";
 export default {
   props: {
-    mealId: { type: Number, required: true }
+    mealId: { type: Number, required: true },
+    selected: { type: Boolean, required: false, default: () => false }
   },
   setup(props) {
+    // get the appropriate object from the prop mealId
     const mealObj = meals.find(m => m.mealId === props.mealId);
+    const selectedIcon = computed(() => (props.selected ? "remove" : "add"));
     return {
-      mealObj
+      mealObj,
+      selectedIcon
     }; // anything returned here will be available for the rest of the component
   },
   // the "rest" of the component
   methods: {
+    // to import image assets cannot be dynamically imported in the template
     getImgUrl(pic) {
-      console.log("pic: ", pic);
       return require("../assets/meals/" + pic);
     },
-    addMeal(obj) {
-      this.$emit("add-meal", obj);
+    // store action dispatch to toggle the selection of indicated meal
+    selectMeal(obj) {
+      this.$store.dispatch("toggleMealId", obj.mealId);
     }
   }
 };
@@ -86,7 +94,12 @@ export default {
   margin: auto;
   border-radius: 12px;
   margin: 12px;
+  box-sizing: border-box;
   /* width: 300px; */
+}
+.meal-card-selected {
+  border: 1px green solid;
+  background: lightgreen;
 }
 .card-header {
   padding: 12px;
@@ -151,5 +164,10 @@ export default {
   line-height: 36px;
   box-sizing: border-box;
   padding: 5px;
+  cursor: pointer;
+}
+.button-selected {
+  color: green;
+  background: white;
 }
 </style>

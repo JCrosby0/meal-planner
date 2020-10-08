@@ -7,10 +7,20 @@
       <router-link to="/shopping">Shopping List</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view />
+    <div class="app-main">
+      <router-view />
+    </div>
+    <div class="app-footer">
+      <footerbar />
+    </div>
   </div>
 </template>
-
+<script>
+import footerbar from "@/components/Footer";
+export default {
+  components: { footerbar }
+};
+</script>
 <style lang="scss">
 body {
   padding: 0;
@@ -35,5 +45,25 @@ body {
       color: #42b983;
     }
   }
+}
+.root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+.nav {
+  flex: 1 1 48px;
+}
+.app-main {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+.app-footer {
+  flex: 0 0 60px;
+  border-top: 2px lightgreen solid;
+  background: #cfc6c6;
+  overflow: hidden;
 }
 </style>

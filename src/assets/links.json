@@ -1,0 +1,16 @@
+[{
+        "name": "Browse Meals",
+        "path": "meals",
+        "icon": "restaurant"
+    },
+    {
+        "name": "This Week",
+        "path": "week",
+        "icon": "date_range"
+    },
+    {
+        "name": "Shopping List",
+        "path": "shopping",
+        "icon": "shopping_cart"
+    }
+]
