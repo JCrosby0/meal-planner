@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <h2 class="center">Select meals for this week</h2>
+    <h2 class="center">Browse Meals</h2>
     <div class="filter-container">
       Filter:
       <input />

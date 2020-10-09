@@ -47,9 +47,10 @@ export default {
 <style scoped>
 .base {
   width: 200px;
-  padding: 12px 36px;
+  padding: 12px 24px;
   border: 1px grey solid;
   border-radius: 6px;
+  background: #efffef;
   margin: 6px auto;
   position: relative;
   cursor: grab;
@@ -57,13 +58,15 @@ export default {
 }
 .placeholder {
   border: 1px grey dashed;
+  background: none;
   padding: 12px;
   cursor: not-allowed;
 }
 i {
   position: absolute;
   font-size: 18px;
-  line-height: 100%;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 .close {
   right: 6px;

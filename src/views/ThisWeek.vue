@@ -1,36 +1,47 @@
 <template>
   <div class="this-week-root" @dragend="dragEnd()">
-    <h1>
-      List of meals selected for this week
-    </h1>
-    <h4>
+    <h2>
+      This week's meals
+    </h2>
+    <!-- <h4>
       There are currently {{ mealsThisWeek.length }} meals selected.<br />
-    </h4>
+    </h4> -->
     <!-- 2 columns, assigned and unassigned -->
     <div class="meal-order-planner">
       <div class="assigned">
-        Assigned Meals ({{ orderedMealsCount }})
-        <span v-for="(day, i) in dayOfWeek" :key="'row-item' + i">
-          <div :id="day" class="row-item">
-            <div class="day-item">{{ day }}:</div>
-            <MealToken
-              :name="orderedMealObjects[i].nameAdult"
-              :meal-id="orderedMealObjects[i].mealId"
-              class="dropzone"
-              :class="{ draggable: orderedMealObjects[i].mealId > -1 }"
-              :draggable="orderedMealObjects[i].mealId > -1"
-              @dragstart="e => dragStart(e, orderedMealObjects[i])"
-              @drop="e => onDrop(e, i)"
-              @dragenter.prevent="e => dragOver(e)"
-              @dragleave.prevent="e => dragOver(e)"
-              @dragover.prevent
-              @remove="removeMeal(selectedMeal(i))"
-            />
-          </div>
-        </span>
+        <h4>Assigned Meals ({{ orderedMealsCount }})</h4>
+        <table>
+          <tr
+            v-for="(day, i) in dayOfWeek"
+            :id="day"
+            :key="'row-item' + i"
+            class="row-item"
+          >
+            <!-- <tr> -->
+            <td>
+              <div class="day-item">{{ day }}:</div>
+            </td>
+            <td>
+              <MealToken
+                :name="orderedMealObjects[i].nameAdult"
+                :meal-id="orderedMealObjects[i].mealId"
+                class="dropzone"
+                :class="{ draggable: orderedMealObjects[i].mealId > -1 }"
+                :draggable="orderedMealObjects[i].mealId > -1"
+                @dragstart="e => dragStart(e, orderedMealObjects[i])"
+                @drop="e => onDrop(e, i)"
+                @dragenter.prevent="e => dragOver(e)"
+                @dragleave.prevent="e => dragOver(e)"
+                @dragover.prevent
+                @remove="removeMeal(selectedMeal(i))"
+              />
+            </td>
+          </tr>
+          <!-- </tr> -->
+        </table>
       </div>
       <div class="unassigned">
-        Unassigned Meals ({{ unassignedMeals.length }}):
+        <h4>Unassigned Meals ({{ unassignedMeals.length }}):</h4>
         <div v-for="meal in unassignedMeals" :key="meal">
           <MealToken
             :name="meal.nameAdult"
@@ -84,15 +95,7 @@ export default {
       meals.filter(m => store.getters.selectedMealsThisWeek.includes(m.mealId))
     ); // [{}, {}, ...]
 
-    const dayOfWeek = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ];
+    const dayOfWeek = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
     return {
       meals,
       selectedMeals,
@@ -178,28 +181,30 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
 }
 .unassigned,
 .assigned {
-  flex: 1 1 50%;
+  flex: 1 1 auto;
+  min-width: 50%;
+  box-sizing: border-box;
   text-align: center;
   display: flex;
   flex-direction: column;
   padding: 0 6px;
 }
 .row-item {
-  width: 100%;
+  /* width: 100%; */
   margin: auto;
-  display: flex;
+  /* display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  justify-content: center;
+  align-items: center; */
 }
 .day-item {
-  flex: 0 0 100px;
+  flex: 1 0 55px;
   text-align: right;
-  padding-right: 6px;
+  padding: 0 6px;
 }
 .draggable {
   cursor: grab;
@@ -209,27 +214,12 @@ export default {
   /* cursor: no-drop; */
 }
 .droppable {
-  background: palegoldenrod;
+  background: #efffef;
 }
 .drag-hover {
-  background: palevioletred;
+  background: #ccffcc;
 }
-/* .meal-item {
-  flex: 1 0 200px;
-  padding: 12px;
-  border: 1px grey solid;
-  border-radius: 6px;
-  cursor: move;
-}
-.meal-item-un {
-  flex: 0 0 auto;
-  margin: 6px auto;
-  min-width: 200px;
-  padding: 12px;
-  border: 1px grey solid;
-  border-radius: 6px;
-  cursor: move;
-} */
+
 .control-item {
   flex: 0 0 20%;
 }
