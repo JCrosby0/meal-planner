@@ -33,10 +33,10 @@
         },
         "prepTime": "short",
         "ingredients": [
-            "Chicken",
+            "Chicken Breast",
             "Rice",
             "Snowpeas",
-            "Carrot",
+            "Carrots",
             "Capsicum",
             "Coconut Milk",
             "Green Curry Paste",
@@ -62,7 +62,7 @@
         },
         "prepTime": "long",
         "ingredients": [
-            "Lamb",
+            "Lamb Butterfly",
             "Potato",
             "Sweet Potato",
             "Carrots"
@@ -108,7 +108,7 @@
         },
         "prepTime": "long",
         "ingredients": [
-            "Beef",
+            "Beef Mince",
             "Lasagna Sheets",
             "Bechamel Sauce",
             "Passata",
@@ -133,7 +133,7 @@
         "prepTime": "Short",
         "ingredients": [
             "Taco Kit",
-            "Beef",
+            "Beef Mince",
             "Salad"
         ],
         "tags": [
@@ -156,7 +156,7 @@
         "ingredients": [
             "Risotto",
             "Pumpkin",
-            "Chicken"
+            "Chicken Breast"
         ],
         "tags": [
             "Chicken"

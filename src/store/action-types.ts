@@ -1,4 +1,6 @@
 export enum ActionTypes {
   toggleMealId = "toggleMealId",
-  assignMeal = "assignMeal"
+  assignMeal = "assignMeal",
+  AddItemToShoppingList = "AddItemToShoppingList",
+  RemoveItemFromShoppingList = "RemoveItemFromShoppingList"
 }

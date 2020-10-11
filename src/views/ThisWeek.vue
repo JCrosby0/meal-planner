@@ -23,15 +23,16 @@
             </td>
             <td>
               <MealToken
+                :id="`day-${i}`"
                 :name="orderedMealObjects[i].nameAdult"
                 :meal-id="orderedMealObjects[i].mealId"
                 class="dropzone"
                 :class="{ draggable: orderedMealObjects[i].mealId > -1 }"
                 :draggable="orderedMealObjects[i].mealId > -1"
-                @dragstart="e => dragStart(e, orderedMealObjects[i])"
-                @drop="e => onDrop(e, i)"
-                @dragenter.prevent="e => dragOver(e)"
-                @dragleave.prevent="e => dragOver(e)"
+                @dragstart="dragStart($event, orderedMealObjects[i])"
+                @drop="onDrop($event, i)"
+                @dragenter.prevent="dragOver($event)"
+                @dragleave.prevent="dragOver($event)"
                 @dragover.prevent
                 @remove="removeMeal(selectedMeal(i))"
               />
@@ -48,7 +49,9 @@
             :meal-id="meal.mealId"
             class="draggable"
             :draggable="true"
-            @dragstart="e => dragStart(e, meal)"
+            @touchstart="touchStart($event, meal)"
+            @touchend="touchEnd($event, meal)"
+            @dragstart="dragStart($event, meal)"
           />
           <!-- @dragend="e => logEvent(e, 'token')" -->
           <!-- @drag="e => logEvent(e, 'token')" -->
@@ -60,10 +63,10 @@
 </template>
 
 <script>
-const placeholder = {
-  nameAdult: "Drag a meal here",
-  mealId: -1
-};
+// const placeholder = {
+//   nameAdult: "Drag a meal here",
+//   mealId: -1
+// };
 import MealToken from "@/components/MealToken";
 import meals from "@/assets/meals.json";
 import { useStore } from "../store";
@@ -74,11 +77,15 @@ export default {
     const store = useStore();
     const selectedMeals = computed(() => store.state.mealsThisWeek); // [true, false, false, true, false...]
     const orderedMeals = computed(() => store.state.assignedMeals);
-    const orderedMealObjects = computed(() => {
-      return store.state.assignedMeals.map(mealId => {
-        return meals.find(n => n.mealId === mealId) || placeholder;
-      });
-    });
+    const orderedMealObjects = computed(
+      () => store.getters.assignedMealsThisWeek
+    );
+
+    // const orderedMealObjects = computed(() => {
+    //   return store.state.assignedMeals.map(mealId => {
+    //     return meals.find(n => n.mealId === mealId) || placeholder;
+    //   });
+    // });
     const orderedMealsCount = computed(
       () => store.state.assignedMeals.filter(m => m !== -1).length
     );
@@ -152,6 +159,27 @@ export default {
       e.dataTransfer.setData("meal", JSON.stringify(meal));
       // add meal id to dataTransfer
       this.toggleDroppable(true);
+    },
+    touchStart() {
+      // toggle all the droppable zones
+      this.toggleDroppable(true);
+    },
+    touchEnd(e, meal) {
+      this.toggleDroppable(false);
+      // recurse through drop target coordinates
+      // and find one with class "dropzone"
+      function findTargetId(target) {
+        if (target.classList.contains("dropzone")) return target.id;
+        return findTargetId(target.parentElement);
+      }
+      const target = document.elementFromPoint(
+        e.changedTouches[0].clientX,
+        e.changedTouches[0].clientY
+      );
+      this.$store.dispatch("assignMeal", {
+        mealId: meal.mealId,
+        dayId: findTargetId(target).slice(4, 5)
+      });
     },
     dragEnd() {
       // when dragging ends, remove all droppable highlghting

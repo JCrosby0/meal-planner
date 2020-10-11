@@ -4,17 +4,17 @@
     :class="{ 'meal-card-selected': selected }"
     @click="selectMeal(mealObj)"
   >
+    <div class="card-image">
+      <img
+        class="image image-top"
+        :alt="mealObj.nameAdult"
+        :src="getImgUrl(mealObj.src)"
+      />
+    </div>
     <div class="card-header">
       <span class="title">{{ mealObj.nameKids }}</span
       ><br />
       <span class="sub-title">aka: {{ mealObj.nameAdult }}</span>
-    </div>
-    <div class="card-image">
-      <img
-        class="image"
-        :alt="mealObj.nameAdult"
-        :src="getImgUrl(mealObj.src)"
-      />
     </div>
     <div class="card-footer">
       <div class="tag-container">
@@ -97,13 +97,14 @@ export default {
   align-items: flex-start;
   margin: auto;
   border-radius: 12px;
-  margin: 12px;
+  margin: 12px auto;
   box-sizing: border-box;
   /* width: 300px; */
 }
 .meal-card-selected {
   border: 1px green solid;
-  background: lightgreen;
+  background: #ccffcc;
+  box-shadow: 6px 6px 18px -6px rgba(0, 0, 0, 0.6);
 }
 .card-header {
   padding: 12px;
@@ -118,6 +119,10 @@ export default {
   width: 300px;
   height: 200px;
 }
+.image-top {
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px green solid;
+}
 .card-footer {
   flex: 0 0 auto;
   width: 100%;
@@ -125,7 +130,7 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
+  padding: 0 12px 12px;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -169,9 +174,11 @@ export default {
   box-sizing: border-box;
   padding: 5px;
   cursor: pointer;
+  box-shadow: 6px 6px 6px -6px rgba(0, 0, 0, 0.6);
 }
 .button-selected {
   color: green;
   background: white;
+  box-shadow: 6px 6px 18px -6px rgba(0, 0, 0, 0.6) inset;
 }
 </style>

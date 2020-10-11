@@ -1,6 +1,6 @@
 import { ActionTree, ActionContext } from "vuex";
 import { State } from "./state";
-import { Mutations, AssignMealObject } from "./mutations";
+import { Mutations, ObjAM } from "./mutations";
 import { ActionTypes } from "./action-types";
 import { MutationTypes } from "./mutation-types";
 
@@ -32,10 +32,22 @@ export const actions: ActionTree<State, State> & Actions = {
       resolve(mealId);
     });
   },
-  [ActionTypes.assignMeal]({ commit }, payload: AssignMealObject) {
+  [ActionTypes.assignMeal]({ commit }, payload: ObjAM) {
     return new Promise(resolve => {
       commit(MutationTypes.UNASSIGN_MEAL_ID, payload.mealId);
       commit(MutationTypes.ASSIGN_MEAL_ID_TO_DAY_ID, payload);
+      resolve(payload);
+    });
+  },
+  [ActionTypes.AddItemToShoppingList]({ commit }, payload: object) {
+    return new Promise(resolve => {
+      commit(MutationTypes.ADD_SL_ITEM, payload);
+      resolve(payload);
+    });
+  },
+  [ActionTypes.RemoveItemFromShoppingList]({ commit }, payload: object) {
+    return new Promise(resolve => {
+      commit(MutationTypes.REMOVE_SL_ITEM, payload);
       resolve(payload);
     });
   }

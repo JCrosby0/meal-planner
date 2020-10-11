@@ -33,11 +33,18 @@ export default {
 }
 
 .link {
-  flex: 0 0 32%;
+  flex: 0 0 33%;
   font-size: 0.75rem;
   color: #fff;
   padding: 6px;
-
+  box-sizing: border-box;
+  .link-inner {
+    border-radius: 12px;
+    height: 100%;
+    margin: auto;
+    padding: 3px;
+    box-sizing: border-box;
+  }
   a,
   a:hover,
   a:visited {
@@ -45,13 +52,8 @@ export default {
     color: #fff;
 
     &.router-link-exact-active {
-      height: 100%;
-      width: 100%;
-
       .link-inner {
-        border-radius: 6px;
         background: rgba(255, 255, 255, 0.4);
-        padding: 0 12px;
       }
     }
   }
