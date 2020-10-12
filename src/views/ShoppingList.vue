@@ -19,16 +19,21 @@
     </div>
     <div class="add-item">
       <input
-        v-model="addItem"
+        v-model="itemToAdd"
         class="input-box"
         placeholder="Add Item to List"
+        @keyup.enter="addToShoppingList"
       />
       <i class="material-icons add-item-button" @click="addToShoppingList"
         >add</i
       >
     </div>
     <div class="shopping-list">
-      <div v-for="item in ingredients" :key="item" class="shopping-item">
+      <div
+        v-for="(item, index) in shoppingList"
+        :key="item"
+        class="shopping-item"
+      >
         <span class="label">{{ item.name }}</span>
         <!-- display item location if sort method is 2 or 3 -->
         <span v-if="sortBy.slice(2, 4).includes(sortSelected)" class="location">
@@ -37,7 +42,12 @@
         <span v-if="sortBy[1] === sortSelected" class="location">
           {{ item.nameAdult }}
         </span>
-        <input type="checkbox" class="check-box" :value="item.checked" />
+        <input
+          type="checkbox"
+          class="check-box"
+          :value="item.checked"
+          @input="toggleChecked($event, item, index)"
+        />
       </div>
     </div>
     <ul>
@@ -47,88 +57,50 @@
 </template>
 
 <script>
-import meals from "@/assets/meals.json";
+// import meals from "@/assets/meals.json";
 import sorting from "@/assets/ingredient-locations.json";
 import { useStore } from "../store";
 import { computed, ref } from "vue";
-const sortOptions = ["A->Z", "Meal", "Home", "Woolies"];
-const sortByCategories = (a, b, sortSelected, sortCompleted) => {
-  let aIndex;
-  let bIndex;
-  let order;
-  // if sorting by home or Woolies, sort by index in the combined array
-  if ([sortOptions[2], sortOptions[3]].includes(sortSelected.value)) {
-    order = sorting[sortSelected.value].reduce(
-      (acc, cur) => [...acc, ...cur.ingredients.sort()],
-      []
-    );
-    aIndex = order.indexOf(a.name);
-    bIndex = order.indexOf(b.name);
-  }
-  // if sortCompleted = true, primary sort priority is by checked status.
-  if (sortCompleted) {
-    if (a.checked && !b.checked) return 1;
-    if (!a.checked && b.checked) return -1;
-  }
-  // if both have same status, it will go through to other sort priority
-  switch (sortSelected.value) {
-    case sortOptions[2]: // Home
-    case sortOptions[3]: // Woolies
-      return aIndex >= bIndex ? 1 : -1;
-    case sortOptions[0]: // Alphabetical
-      return a.name >= b.name ? 1 : -1;
-    case sortOptions[1]: // Meal
-    default:
-      return 0; // None
-  }
-};
+import { SortOptions, SortByCategories } from "@/assets/js/shoppingListSort";
+
 export default {
   setup() {
-    const sortBy = sortOptions;
+    const sortBy = SortOptions;
     const sortSelected = ref("A->Z");
     const sortCompleted = ref(false);
-    const addItem = ref(undefined);
+    const itemToAdd = ref(undefined);
     const store = useStore();
-    const assignedMeals = computed(() => {
-      const arrIds = store.state.assignedMeals.filter(m => m);
-      return meals.filter(m => arrIds.includes(m.mealId));
+    const shoppingList = computed(() => {
+      return store.getters.shoppingList.sort((a, b) =>
+        SortByCategories(
+          a,
+          b,
+          sortSelected.value,
+          sortCompleted.value,
+          SortOptions
+        )
+      );
     });
-    const ingredients = computed(() => {
-      const arrIds = store.state.assignedMeals.filter(m => m);
-      return meals
-        .filter(m => arrIds.includes(m.mealId))
-        .reduce((acc, meal) => {
-          return [
-            ...acc,
-            ...meal.ingredients.map(i => {
-              return {
-                name: i,
-                checked: false,
-                nameAdult: meal.nameAdult
-              };
-            })
-          ];
-        }, [])
-        .sort((a, b) => sortByCategories(a, b, sortSelected, sortCompleted));
-    });
-
     return {
-      assignedMeals,
-      ingredients,
       sortBy,
       sortSelected,
       sortCompleted,
-      addItem
+      itemToAdd,
+      shoppingList
     };
   },
   methods: {
     addToShoppingList() {
+      if (!this.itemToAdd) return;
       const payload = {
-        nameAdult: this.addItem,
-        location: "manually added",
-        id: undefined
+        name: this.itemToAdd,
+        nameAdult: "Individual Item",
+        meal: "Individual Item",
+        id: undefined,
+        checked: false
       };
-      this.store.dispatch("AddItemToShoppingList", payload);
+      this.$store.dispatch("AddItemToShoppingList", payload);
+      this.itemToAdd = undefined;
     },
     itemLocation(item) {
       if (this.sortSelected === "None") return "somewhere";
@@ -143,6 +115,27 @@ export default {
         }
       });
       return location;
+    },
+    toggleChecked(event, item, index) {
+      this.shoppingList;
+      console.log("this.shoppingList: ", this.shoppingList);
+      console.log("item: ", item);
+      console.log("index: ", index);
+      console.log("value: ", event);
+      console.log("event.returnValue: ", event.returnValue);
+      const state = this.$store.state;
+      console.log("state: ", state);
+      // how am i going to make handle checked items??
+      const list = [
+        {
+          meal: "x",
+          ingredient: "y",
+          checked: "z",
+          locHome: "w",
+          locWoolies: "v"
+        }
+      ];
+      console.log("list: ", list);
     }
   }
 };

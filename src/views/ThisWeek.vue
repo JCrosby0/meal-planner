@@ -34,6 +34,9 @@
                 @dragenter.prevent="dragOver($event)"
                 @dragleave.prevent="dragOver($event)"
                 @dragover.prevent
+                @touchstart="touchStart($event, orderedMealObjects[i])"
+                @touchmove="touchMove($event, orderedMealObjects[i])"
+                @touchend="touchEnd($event, orderedMealObjects[i])"
                 @remove="removeMeal(selectedMeal(i))"
               />
             </td>
@@ -50,6 +53,7 @@
             class="draggable"
             :draggable="true"
             @touchstart="touchStart($event, meal)"
+            @touchmove.prevent="touchMove($event)"
             @touchend="touchEnd($event, meal)"
             @dragstart="dragStart($event, meal)"
           />
@@ -71,6 +75,12 @@ import MealToken from "@/components/MealToken";
 import meals from "@/assets/meals.json";
 import { useStore } from "../store";
 import { computed } from "vue";
+let elementLastHovered;
+function findParentElementWithClass(target, desiredClass) {
+  if (target === null) return null;
+  if (target.classList.contains(desiredClass)) return target;
+  return findParentElementWithClass(target.parentElement, desiredClass);
+}
 export default {
   components: { MealToken },
   setup() {
@@ -127,6 +137,10 @@ export default {
       this.$store.dispatch("toggleMealId", meal.mealId);
     },
     toggleDroppable(setTo = "toggle") {
+      // handle any left-over hover targets
+      if (elementLastHovered && elementLastHovered.classList)
+        elementLastHovered.classList.remove("drag-hover");
+      // handle all dropzones
       const zones = document.getElementsByClassName("dropzone");
       switch (setTo) {
         case "toggle":
@@ -160,41 +174,71 @@ export default {
       // add meal id to dataTransfer
       this.toggleDroppable(true);
     },
-    touchStart() {
+    touchStart(e, meal) {
+      if (meal.mealId < 0) return;
       // toggle all the droppable zones
       this.toggleDroppable(true);
     },
-    touchEnd(e, meal) {
-      this.toggleDroppable(false);
-      // recurse through drop target coordinates
-      // and find one with class "dropzone"
-      function findTargetId(target) {
-        if (target.classList.contains("dropzone")) return target.id;
-        return findTargetId(target.parentElement);
+    // manually animate the element being moved
+    touchMove(e, meal) {
+      if (meal && meal.mealId < 0) return;
+      e.preventDefault();
+
+      // while dragging, find the currenly hovered-over target
+      // and apply styling if appropriate
+      const hoverTarget = document.elementFromPoint(
+        e.changedTouches[0].clientX,
+        e.changedTouches[0].clientY
+      );
+      const droppableTarget = findParentElementWithClass(
+        hoverTarget,
+        "droppable"
+      );
+      // remove hover if we moved off the target
+      if (elementLastHovered && elementLastHovered !== droppableTarget) {
+        elementLastHovered.classList.remove("drag-hover");
       }
+      // if hovering over a droppable target, add the drag hover class
+      if (droppableTarget) {
+        droppableTarget.classList.add("drag-hover");
+        // save this element for next time
+        elementLastHovered = droppableTarget;
+      }
+
+      // style the element being dragged to move with the touch
+      // check parents for being draggable in case we click on a child element
+      const dragElement = findParentElementWithClass(e.target, "draggable");
+      const xPos = e.touches[0].pageX;
+      const yPos = e.touches[0].pageY;
+      dragElement.style.x = xPos;
+      dragElement.style.y = yPos;
+      dragElement.style.zIndex = dragElement.style.zIndex + 10;
+      //   this probably needs to be play with position absolute
+    },
+    touchEnd(e, meal) {
+      if (meal.mealId < 0) return;
+      e.target.style.position = "relative";
+      this.toggleDroppable(false);
       const target = document.elementFromPoint(
         e.changedTouches[0].clientX,
         e.changedTouches[0].clientY
       );
       this.$store.dispatch("assignMeal", {
         mealId: meal.mealId,
-        dayId: findTargetId(target).slice(4, 5)
+        dayId: findParentElementWithClass(target, "dropzone").id.slice(4, 5)
       });
     },
     dragEnd() {
       // when dragging ends, remove all droppable highlghting
-      //   console.log("drag end: ", e);
       this.toggleDroppable(false);
     },
     dragOver(e) {
       // when dragging over a droppable, change color for confirmation
-      //   console.log("drag-hover toggle:", e, x);
       e.target.classList.toggle("drag-hover");
     },
     onDrop(e, dayIndex) {
       this.toggleDroppable(false);
       const meal = JSON.parse(e.dataTransfer.getData("meal"));
-      //   this.orderedMeals[dayIndex] = object.mealId;
       this.$store.dispatch("assignMeal", {
         mealId: meal.mealId,
         dayId: dayIndex
@@ -207,6 +251,7 @@ export default {
 <style scoped>
 .meal-order-planner {
   display: flex;
+  position: relative;
   flex-direction: row;
   justify-content: space-evenly;
   flex-wrap: wrap;
@@ -236,10 +281,6 @@ export default {
 }
 .draggable {
   cursor: grab;
-}
-.dropzone {
-  /* placeholder */
-  /* cursor: no-drop; */
 }
 .droppable {
   background: #efffef;

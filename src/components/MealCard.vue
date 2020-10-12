@@ -99,11 +99,11 @@ export default {
   border-radius: 12px;
   margin: 12px auto;
   box-sizing: border-box;
-  /* width: 300px; */
 }
 .meal-card-selected {
-  border: 1px green solid;
+  border: 3px green solid;
   background: #ccffcc;
+  box-sizing: border-box;
   box-shadow: 6px 6px 18px -6px rgba(0, 0, 0, 0.6);
 }
 .card-header {

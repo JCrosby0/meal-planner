@@ -36,5 +36,9 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.REMOVE_SL_ITEM](state, item: any) {
     const index = state.additionalShoppingList.indexOf(item);
     index >= 0 && state.additionalShoppingList.splice(index, 1);
+  },
+  [MutationTypes.TOGGLE_INGREDIENT_CHECK](state, item: any) {
+    // do something here to toggle ingredient checks
+    console.log("toggle ingredient check", item);
   }
 };

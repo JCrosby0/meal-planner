@@ -5,6 +5,7 @@ console.log("There are", noMeals, "meals in the current meal list.");
 export const state = {
   mealsThisWeek: Array(noMeals).fill(false),
   assignedMeals: Array(7).fill(false),
-  additionalShoppingList: Array(1).fill(undefined)
+  additionalShoppingList: Array(0).fill(undefined),
+  checkedItems: Object
 };
 export type State = typeof state;
