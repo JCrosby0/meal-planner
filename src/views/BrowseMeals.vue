@@ -28,11 +28,15 @@ export default {
     const arrMealIds = meals.map(v => v.mealId);
     const selectedMeals = computed(() => store.state.mealsThisWeek);
     const mealsThisWeek = computed(() => store.getters.selectedMealsThisWeek);
+    const storedMeals = computed(
+      () => JSON.parse(localStorage.getItem("storeState")).selectedMealsThisWeek
+    );
     return {
       meals,
       arrMealIds,
       selectedMeals,
-      mealsThisWeek
+      mealsThisWeek,
+      storedMeals
     }; // anything returned here will be available for the rest of the component
   }
   // the "rest" of the component

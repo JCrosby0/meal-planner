@@ -87,9 +87,13 @@ export default {
     const store = useStore();
     const selectedMeals = computed(() => store.state.mealsThisWeek); // [true, false, false, true, false...]
     const orderedMeals = computed(() => store.state.assignedMeals);
-    const orderedMealObjects = computed(
-      () => store.getters.assignedMealsThisWeek
-    );
+    const orderedMealObjects = computed(() => {
+      console.log(
+        "store.getters.assignedMealsThisWeek: ",
+        store.getters.assignedMealsThisWeek
+      );
+      return store.getters.assignedMealsThisWeek;
+    });
 
     // const orderedMealObjects = computed(() => {
     //   return store.state.assignedMeals.map(mealId => {

@@ -17,8 +17,15 @@
 </template>
 <script>
 import footerbar from "@/components/Footer";
+import { onBeforeMount } from "vue";
+import { useStore } from "./store";
 export default {
-  components: { footerbar }
+  components: { footerbar },
+  setup() {
+    const store = useStore();
+    store.commit("INITIALISE_STORE");
+    return {};
+  }
 };
 </script>
 <style lang="scss">
