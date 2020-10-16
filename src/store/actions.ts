@@ -3,6 +3,7 @@ import { State } from "./state";
 import { Mutations, ObjAM } from "./mutations";
 import { ActionTypes } from "./action-types";
 import { MutationTypes } from "./mutation-types";
+import { ObjIngredientCheck } from "./mutations";
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -39,15 +40,36 @@ export const actions: ActionTree<State, State> & Actions = {
       resolve(payload);
     });
   },
-  [ActionTypes.AddItemToShoppingList]({ commit }, payload: object) {
-    return new Promise(resolve => {
-      commit(MutationTypes.ADD_SL_ITEM, payload);
-      resolve(payload);
+  [ActionTypes.AddItemToShoppingList](
+    { state, commit },
+    payload: ObjIngredientCheck
+  ) {
+    return new Promise((resolve, reject) => {
+      if (
+        !state.additionalShoppingList
+          .map(m => m.ingredient.toLowerCase())
+          .includes(payload.ingredient.toLowerCase())
+      ) {
+        commit(MutationTypes.ADD_SL_ITEM, payload);
+        resolve(payload);
+      } else {
+        reject(
+          new Error(
+            `${payload.ingredient || "That item"} already exists in list`
+          )
+        );
+      }
     });
   },
   [ActionTypes.RemoveItemFromShoppingList]({ commit }, payload: object) {
     return new Promise(resolve => {
       commit(MutationTypes.REMOVE_SL_ITEM, payload);
+      resolve(payload);
+    });
+  },
+  [ActionTypes.ToggleIngredientChecked]({ commit }, payload: object) {
+    return new Promise(resolve => {
+      commit(MutationTypes.TOGGLE_INGREDIENT_CHECK, payload);
       resolve(payload);
     });
   }

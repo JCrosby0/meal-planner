@@ -5,6 +5,11 @@ interface MealObj {
   ingredients: string[];
   nameAdult: string;
 }
+interface CheckedObj {
+  name: string;
+  meal: string;
+  checked: boolean;
+}
 
 const ingredientMapper = (acc: any[], meal: MealObj) => {
   return [
@@ -12,6 +17,7 @@ const ingredientMapper = (acc: any[], meal: MealObj) => {
     ...meal.ingredients.map(i => {
       return {
         name: i,
+        ingredient: i,
         checked: false,
         nameAdult: meal.nameAdult,
         meal: meal.nameAdult
@@ -37,7 +43,7 @@ export const getters: GetterTree<State, State> & Getters = {
       nameAdult: "Drag a meal here",
       mealId: -1
     };
-    return state.assignedMeals.map(mealId => {
+    return state.assignedMeals.map((mealId: number) => {
       return meals.find(n => n.mealId === mealId) || ph;
     });
   },
@@ -48,6 +54,25 @@ export const getters: GetterTree<State, State> & Getters = {
     const mealIngredients = meals
       .filter(m => assignedMealIds.includes(m.mealId))
       .reduce(ingredientMapper, []);
-    return [...additionalIngredients, ...mealIngredients];
+    const combined = [...additionalIngredients, ...mealIngredients];
+    // go through ALL items in the combined list
+    combined.forEach(c => {
+      // go through checked items until one match is found
+      if (
+        state.checkedItems.some(item => {
+          if (item.meal === c.meal && item.ingredient === c.ingredient) {
+            c.checked = true;
+            // break the .some iteration
+            return true;
+          }
+        })
+      ) {
+        c.checked = true;
+      } else {
+        c.checked = false;
+      }
+      return;
+    });
+    return combined;
   }
 };

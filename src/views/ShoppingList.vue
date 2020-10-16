@@ -28,11 +28,16 @@
         >add</i
       >
     </div>
+    <!-- show error message if adding something that's already on the list -->
+    <div v-show="showErrorMessage" class="error-message">
+      <span>{{ errorMessage }}</span>
+    </div>
     <div class="shopping-list">
       <div
         v-for="(item, index) in shoppingList"
         :key="item"
         class="shopping-item"
+        @click.capture="toggleChecked($event, item, index)"
       >
         <span class="label">{{ item.name }}</span>
         <!-- display item location if sort method is 2 or 3 -->
@@ -43,16 +48,14 @@
           {{ item.nameAdult }}
         </span>
         <input
+          v-model="item.checked"
           type="checkbox"
           class="check-box"
-          :value="item.checked"
           @input="toggleChecked($event, item, index)"
         />
       </div>
     </div>
-    <ul>
-      <li>Sort checked to bottom of list</li>
-    </ul>
+    <ul></ul>
   </div>
 </template>
 
@@ -67,8 +70,10 @@ export default {
   setup() {
     const sortBy = SortOptions;
     const sortSelected = ref("A->Z");
-    const sortCompleted = ref(false);
+    const sortCompleted = ref(true);
     const itemToAdd = ref(undefined);
+    const showErrorMessage = ref(false);
+    const errorMessage = ref("");
     const store = useStore();
     const shoppingList = computed(() => {
       return store.getters.shoppingList.sort((a, b) =>
@@ -86,20 +91,27 @@ export default {
       sortSelected,
       sortCompleted,
       itemToAdd,
-      shoppingList
+      shoppingList,
+      showErrorMessage,
+      errorMessage
     };
   },
   methods: {
     addToShoppingList() {
+      this.showErrorMessage = false;
       if (!this.itemToAdd) return;
       const payload = {
         name: this.itemToAdd,
+        ingredient: this.itemToAdd,
         nameAdult: "Individual Item",
         meal: "Individual Item",
         id: undefined,
         checked: false
       };
-      this.$store.dispatch("AddItemToShoppingList", payload);
+      this.$store.dispatch("AddItemToShoppingList", payload).catch(err => {
+        this.errorMessage = err.message;
+        this.showErrorMessage = true;
+      });
       this.itemToAdd = undefined;
     },
     itemLocation(item) {
@@ -116,26 +128,17 @@ export default {
       });
       return location;
     },
-    toggleChecked(event, item, index) {
-      this.shoppingList;
-      console.log("this.shoppingList: ", this.shoppingList);
-      console.log("item: ", item);
-      console.log("index: ", index);
-      console.log("value: ", event);
-      console.log("event.returnValue: ", event.returnValue);
-      const state = this.$store.state;
-      console.log("state: ", state);
-      // how am i going to make handle checked items??
-      const list = [
-        {
-          meal: "x",
-          ingredient: "y",
-          checked: "z",
-          locHome: "w",
-          locWoolies: "v"
-        }
-      ];
-      console.log("list: ", list);
+    toggleChecked(event, item) {
+      // don't double process input box inside div, event + target combinations are
+      // click + div.shopping-item
+      // click + input.check-box <-- prevent this one
+      // input + input.check-box
+      if (event.type === "click" && event.target.nodeName === "INPUT") return;
+      this.$store.dispatch("ToggleIngredientChecked", {
+        meal: item.meal,
+        ingredient: item.name,
+        status: event.returnValue
+      });
     }
   }
 };
@@ -209,5 +212,8 @@ export default {
   font-size: 44px;
   background: green;
   color: white;
+}
+.error-message {
+  color: red;
 }
 </style>

@@ -1,3 +1,4 @@
+import { ObjectEmitsOptions } from "vue";
 // MutationTree<State> & Mutations intersection of types guarantees that a contract is correctly implemented.
 import { MutationTree } from "vuex";
 import { MutationTypes } from "./mutation-types";
@@ -16,6 +17,12 @@ export interface ObjAM {
   dayId: number;
   mealId: number;
 }
+export interface ObjIngredientCheck {
+  ingredient: string;
+  meal: string;
+  status: boolean;
+}
+
 export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.TOGGLE_MEAL_ID](state, mealId: number) {
     const old: boolean = state.mealsThisWeek[mealId];
@@ -27,7 +34,7 @@ export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.UNASSIGN_MEAL_ID](state, mealId: number) {
     const index = state.assignedMeals.indexOf(mealId);
     if (index > -1) {
-      state.assignedMeals[index] = false;
+      state.assignedMeals[index] = -1;
     }
   },
   [MutationTypes.ADD_SL_ITEM](state, item: any) {
@@ -38,7 +45,13 @@ export const mutations: MutationTree<State> & Mutations = {
     index >= 0 && state.additionalShoppingList.splice(index, 1);
   },
   [MutationTypes.TOGGLE_INGREDIENT_CHECK](state, item: any) {
-    // do something here to toggle ingredient checks
-    console.log("toggle ingredient check", item);
+    const index = state.checkedItems.findIndex(
+      i => i.meal === item.meal && i.ingredient === item.ingredient
+    );
+    if (index >= 0) {
+      state.checkedItems.splice(index, 1);
+    } else {
+      state.checkedItems.push(item);
+    }
   }
 };
