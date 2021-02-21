@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "753275fc0e816b242f54",
-    "url": "/meal-planner/css/app.f82bf30e.css"
+    "revision": "bab90c1a5e750074b4d5",
+    "url": "/meal-planner/css/app.931dc677.css"
   },
   {
     "revision": "206731eee439b927fbe8ca431df5aada",
@@ -28,10 +28,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/meal-planner/img/curried-sausages.4f4b32f9.jpeg"
   },
   {
-    "revision": "82b9c7a5a3f405032b1db71a25f67021",
-    "url": "/meal-planner/img/logo.82b9c7a5.png"
-  },
-  {
     "revision": "0d78dba0b484239d4d9ce377446b5c95",
     "url": "/meal-planner/img/spaghetti-bolognese.0d78dba0.jpeg"
   },
@@ -44,20 +40,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/meal-planner/img/thai-green-chicken-curry.adade08e.jpeg"
   },
   {
-    "revision": "543b99e147749afd7e92ea283e9da7f1",
+    "revision": "3e964e9adcb2a1b4f713d98c21b9d26b",
     "url": "/meal-planner/index.html"
   },
   {
-    "revision": "2201d6410d78567ac967",
-    "url": "/meal-planner/js/about.e698aacd.js"
+    "revision": "bab90c1a5e750074b4d5",
+    "url": "/meal-planner/js/app.da134182.js"
   },
   {
-    "revision": "753275fc0e816b242f54",
-    "url": "/meal-planner/js/app.1545bb19.js"
-  },
-  {
-    "revision": "547992ae27a5b96f7297",
-    "url": "/meal-planner/js/chunk-vendors.f97cce3e.js"
+    "revision": "e0622db283bc68305beb",
+    "url": "/meal-planner/js/chunk-vendors.2689bf8d.js"
   },
   {
     "revision": "00bb71dea27824c9f49d5676a8c17d46",
