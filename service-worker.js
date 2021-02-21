@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/sudoku-web-app/precache-manifest.1e0a39ff3d000fd413bc7259fbc754ff.js"
+  "/meal-planner/precache-manifest.83689c04784699be701017b7daccc928.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "meal-planner"});
