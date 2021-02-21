@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "bab90c1a5e750074b4d5",
-    "url": "/meal-planner/css/app.931dc677.css"
+    "revision": "36b5568184e5c9464a5e",
+    "url": "/meal-planner/css/app.52ae5e9f.css"
   },
   {
     "revision": "206731eee439b927fbe8ca431df5aada",
@@ -40,12 +40,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/meal-planner/img/thai-green-chicken-curry.adade08e.jpeg"
   },
   {
-    "revision": "3e964e9adcb2a1b4f713d98c21b9d26b",
+    "revision": "e4db11a91140db30aeb9f4aef8b0c7ee",
     "url": "/meal-planner/index.html"
   },
   {
-    "revision": "bab90c1a5e750074b4d5",
-    "url": "/meal-planner/js/app.da134182.js"
+    "revision": "36b5568184e5c9464a5e",
+    "url": "/meal-planner/js/app.f5ed30ae.js"
   },
   {
     "revision": "e0622db283bc68305beb",
